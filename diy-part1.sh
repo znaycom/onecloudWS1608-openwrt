@@ -10,13 +10,13 @@
 # Description: OpenWrt DIY script part 1 (Before Update feeds)
 #
 
-# Uncomment a feed source
+# 保持 helloworld 注释，不引入 ssr-plus
 # sed -i 's/^#\(.*helloworld\)/\1/' feeds.conf.default
 
-# Add a feed source
-# 1. 添加 OpenClash 源（必须放在最前面）
-sed -i '1i src-git openclash https://github.com/vernesong/OpenClash.git;master' feeds.conf.default
-# 2. 移除 Passwall 两个源（只用 OpenClash，避免体积和冲突）
+# 添加 OpenClash 源
+grep -q '^src-git openclash' feeds.conf.default || \
+sed -i '$a src-git openclash https://github.com/vernesong/OpenClash.git;master' feeds.conf.default
+
+# 移除可能存在的 passwall 源（保险）
 sed -i '/passwall/d' feeds.conf.default
-#sed -i '2s/^#//' feeds.conf.default
-#sed -i '3s/^/#/' feeds.conf.default
+grep -n 'openclash' feeds.conf.default
