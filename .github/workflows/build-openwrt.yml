@@ -124,6 +124,19 @@ jobs:
         chmod +x $GEN_BURN_IMG_SH
         chmod +x AmlImg
         $GITHUB_WORKSPACE/$GEN_BURN_IMG_SH
+        
+    - name: 生成 SD 卡固件
+      if: steps.compile.outputs.status == 'success'
+      run: |
+        set -e
+
+        sudo apt-get update
+        sudo apt-get install -y e2fsprogs util-linux
+
+        chmod +x gen_aml_sdcard_img.sh
+        chmod +x gen_sdcard_img.sh
+
+        ./gen_sdcard_img.sh
 
     - name: Check space usage
       if: (!cancelled())
