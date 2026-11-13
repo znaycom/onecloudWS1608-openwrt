@@ -136,6 +136,16 @@ jobs:
 
         echo "===== ptgen ====="
         find openwrt/staging_dir -type f -name ptgen -print 2>/dev/null || true
+
+        echo "===== eMMC 镜像分区 ====="
+        img_gz="openwrt/bin/targets/amlogic/meson8b/openwrt-amlogic-meson8b-thunder-onecloud-ext4-emmc.img.gz"
+        if [ -f "$img_gz" ]; then
+          gzip -dc "$img_gz" > /tmp/onecloud-emmc.img
+          fdisk -l /tmp/onecloud-emmc.img
+          rm -f /tmp/onecloud-emmc.img
+        else
+          echo "未找到预期的 eMMC 镜像"
+        fi
         
     - name: 生成 SD 卡固件
       if: steps.compile.outputs.status == 'success'
