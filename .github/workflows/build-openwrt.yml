@@ -118,12 +118,24 @@ jobs:
         [ -s DEVICE_NAME ] && echo "DEVICE_NAME=_$(cat DEVICE_NAME)" >> $GITHUB_ENV
         echo "FILE_DATE=_$(date +"%Y%m%d%H%M")" >> $GITHUB_ENV
 
-    - name: 生成直刷包
+    # - name: 生成直刷包
+    #   if: steps.compile.outputs.status == 'success'
+    #   run: |
+    #     chmod +x $GEN_BURN_IMG_SH
+    #     chmod +x AmlImg
+    #     $GITHUB_WORKSPACE/$GEN_BURN_IMG_SH
+    
+    - name: 检查 SD 卡生成环境
       if: steps.compile.outputs.status == 'success'
       run: |
-        chmod +x $GEN_BURN_IMG_SH
-        chmod +x AmlImg
-        $GITHUB_WORKSPACE/$GEN_BURN_IMG_SH
+        echo "===== 固件目录 ====="
+        ls -lh openwrt/bin/targets/amlogic/meson8b/
+
+        echo "===== 脚本 ====="
+        ls -lh gen_aml_sdcard_img.sh gen_sdcard_img.sh
+
+        echo "===== ptgen ====="
+        find openwrt/staging_dir -type f -name ptgen -print 2>/dev/null || true
         
     - name: 生成 SD 卡固件
       if: steps.compile.outputs.status == 'success'
